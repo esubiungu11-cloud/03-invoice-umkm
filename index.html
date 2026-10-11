@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invoice UMKM Pro - Kedip Premium</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',system-ui,sans-serif}
+body{background:#0f0f0f;color:#fff;padding:20px}
+.container{max-width:800px;margin:auto}
+.header{background:linear-gradient(135deg,#FFD700,#FFA500);color:#000;padding:20px;border-radius:16px;text-align:center;margin-bottom:20px;position:relative;overflow:hidden;animation:headerGlow 2.5s ease-in-out infinite}
+@keyframes headerGlow{0%,100%{box-shadow:0 0 15px rgba(255,215,0,0.4)}50%{box-shadow:0 0 30px rgba(255,215,0,0.8),0 0 45px rgba(255,165,0,0.4)}}
+.header h1{font-size:24px;font-weight:900;animation:titlePulse 2s ease-in-out infinite}
+@keyframes titlePulse{0%,100%{opacity:1}50%{opacity:0.85;transform:scale(1.02)}}
+.card{background:#1a1a1a;border:1px solid #333;border-radius:16px;padding:20px;margin-bottom:20px}
+input,textarea,select{width:100%;padding:12px;background:#222;border:1px solid #333;border-radius:10px;color:#fff;margin:8px 0;transition:0.3s}
+input:focus,textarea:focus,select:focus{border-color:#FFD700;box-shadow:0 0 10px rgba(255,215,0,0.3);outline:none}
+.btn{width:100%;padding:14px;border:none;border-radius:10px;font-weight:800;cursor:pointer;margin-top:10px;transition:0.3s}
+.btn-gold{background:linear-gradient(135deg,#FFD700,#FFA500);color:#000;animation:btnBlink 1.8s ease-in-out infinite;position:relative;overflow:hidden}
+@keyframes btnBlink{0%,100%{opacity:1;transform:scale(1);box-shadow:0 0 10px rgba(255,215,0,0.3)}50%{opacity:0.9;transform:scale(1.02);box-shadow:0 0 20px rgba(255,215,0,0.7)}}
+.btn-gold::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(120deg,transparent,rgba(255,255,255,0.3),transparent);transform:rotate(25deg) translateX(-100%);animation:shine 3s infinite}
+@keyframes shine{0%{transform:rotate(25deg) translateX(-100%)}50%{transform:rotate(25deg) translateX(100%)}100%{transform:rotate(25deg) translateX(100%)}}
+.btn-dark{background:#222;color:#fff;border:1px solid #333}
+.row{display:flex;gap:10px}.row>div{flex:1}
+table{width:100%;border-collapse:collapse;margin-top:15px}
+th,td{padding:10px;border-bottom:1px solid #333;text-align:left;font-size:14px}
+th{color:#FFD700}
+.label-kedip{display:inline-block;background:#000;color:#FFD700;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:800;border:1px solid #FFD700;animation:badgeBlink 1.5s ease-in-out infinite}
+@keyframes badgeBlink{0%,100%{background:#000;color:#FFD700}50%{background:#FFD700;color:#000;box-shadow:0 0 12px #FFD700}}
+#invoicePreview{background:#ffffff!important;color:#000!important;padding:30px;border-radius:16px;margin-top:20px;box-shadow:0 0 30px rgba(0,0,0,0.5)}
+#invoicePreview *{color:#000!important}
+#invoicePreview th{color:#000!important;background:#f5f5f5!important}
+.total-kedip{animation:totalPulse 2s ease-in-out infinite;font-weight:900}
+@keyframes totalPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.dot-kedip{display:inline-block;width:8px;height:8px;background:#00ff00;border-radius:50%;margin-right:6px;animation:dotBlink 1s infinite}
+@keyframes dotBlink{0%,100%{opacity:1;box-shadow:0 0 5px #00ff00}50%{opacity:0.3}}
+@media print{.no-print{display:none}#invoicePreview{margin:0;border-radius:0;box-shadow:none}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h1>🧾 INVOICE UMKM PRO</h1>
+<p><span class="dot-kedip"></span>Buat Invoice Profesional Offline - No Internet</p>
+</div>
+<div class="card no-print">
+<h3 style="color:#FFD700;margin-bottom:10px">Info Toko Anda</h3>
+<div class="row"><div><input id="tokoNama" placeholder="Nama Toko"></div><div><input id="tokoWA" placeholder="WA Toko"></div></div>
+<input id="tokoAlamat" placeholder="Alamat Toko">
+</div>
+<div class="card no-print">
+<h3 style="color:#FFD700;margin-bottom:10px">Info Pelanggan</h3>
+<div class="row"><div><input id="custNama" placeholder="Nama Pelanggan"></div><div><input id="invoiceNo"></div></div>
+<div class="row"><div><input id="custWA" placeholder="WA Pelanggan"></div><div><input type="date" id="invoiceDate"></div></div>
+</div>
+<div class="card no-print">
+<h3 style="color:#FFD700;margin-bottom:10px">Tambah Barang <span class="label-kedip">+ BARU</span></h3>
+<div class="row"><div><input id="itemName" placeholder="Nama Barang"></div><div><input id="itemQty" type="number" value="1"></div></div>
+<div class="row"><div><input id="itemPrice" type="number" placeholder="Harga Satuan"></div><div><button class="btn btn-gold" onclick="addItem()">+ TAMBAH ✨</button></div></div>
+<table id="itemTable"><thead><tr><th>Barang</th><th>Qty</th><th>Harga</th><th>Total</th><th></th></tr></thead><tbody></tbody></table>
+</div>
+<div class="card no-print">
+<div class="row"><div><select id="payment"><option>Transfer Bank</option><option>QRIS</option><option>COD</option><option>Tunai</option></select></div><div><input id="discount" type="number" value="0" oninput="render()" placeholder="Diskon Rp"></div></div>
+<textarea id="notes" placeholder="Catatan: Terima kasih!"></textarea>
+<button class="btn btn-gold" onclick="render()">🔄 UPDATE INVOICE</button>
+<button class="btn btn-dark" onclick="window.print()">🖨️ CETAK / PDF</button>
+<button class="btn btn-dark" onclick="shareWA()">📲 KIRIM WA</button>
+</div>
+<div id="invoicePreview">
+<div style="display:flex;justify-content:space-between;border-bottom:3px solid #FFD700;padding-bottom:15px;margin-bottom:15px">
+<div><h2 id="pTokoNama" style="color:#000">XTRADEVR Store</h2><p id="pTokoAlamat" style="font-size:13px;color:#555">Alamat Toko</p><p id="pTokoWA" style="font-size:13px;color:#555">WA</p></div>
+<div style="text-align:right"><h2 style="color:#FFA500">INVOICE</h2><p id="pInvNo">#INV-001</p><p id="pInvDate"></p><span id="pPayment" style="background:#000!important;color:#FFD700!important;padding:4px 10px;border-radius:20px;font-size:12px">Transfer</span></div>
+</div>
+<div style="margin-bottom:15px"><p style="font-size:12px;color:#888">Ditagihkan Kepada:</p><h3 id="pCustNama">Nama Pelanggan</h3><p id="pCustWA" style="font-size:13px;color:#555">WA</p></div>
+<table id="pTable" style="width:100%"><thead><tr style="background:#f5f5f5"><th>DESKRIPSI</th><th>QTY</th><th>HARGA</th><th>TOTAL</th></tr></thead><tbody></tbody><tfoot><tr><td colspan="3" style="text-align:right">Subtotal</td><td id="pSubtotal">Rp 0</td></tr><tr><td colspan="3" style="text-align:right">Diskon</td><td id="pDiscount">Rp 0</td></tr><tr style="font-weight:900;font-size:18px;border-top:2px solid #000"><td colspan="3" style="text-align:right">TOTAL</td><td id="pTotal" class="total-kedip">Rp 0</td></tr></tfoot></table>
+<div style="margin-top:20px;padding:15px;background:#f9f9f9;border-radius:10px"><p id="pNotes" style="font-size:13px">Terima kasih telah berbelanja!</p></div>
+<div style="text-align:center;margin-top:20px;font-size:11px;color:#999">Invoice by lynk.id/xtradevr • <span style="animation:dotBlink 1s infinite">●</span> Offline 100%</div>
+</div>
+</div>
+<script>
+let items=[];let today=new Date().toISOString().split('T')[0];
+document.getElementById('invoiceDate').value=today;
+document.getElementById('invoiceNo').value='INV-'+Date.now().toString().slice(-6);
+function addItem(){let n=document.getElementById('itemName').value,q=parseInt(document.getElementById('itemQty').value)||1,p=parseInt(document.getElementById('itemPrice').value)||0;if(!n||!p){alert('Isi nama & harga!');return}items.push({n,q,p,t:q*p});document.getElementById('itemName').value='';document.getElementById('itemPrice').value='';render();}
+function render(){let tbody=document.querySelector('#itemTable tbody');tbody.innerHTML='';let pT=document.querySelector('#pTable tbody');pT.innerHTML='';let sub=0;items.forEach((it,i)=>{sub+=it.t;tbody.innerHTML+=`<tr><td>${it.n}</td><td>${it.q}</td><td>Rp ${it.p.toLocaleString('id-ID')}</td><td>Rp ${it.t.toLocaleString('id-ID')}</td><td><button onclick="items.splice(${i},1);render()" style="background:#ff4444;color:#fff;border:none;padding:4px 8px;border-radius:6px">x</button></td></tr>`;pT.innerHTML+=`<tr><td>${it.n}</td><td>${it.q}</td><td>Rp ${it.p.toLocaleString('id-ID')}</td><td>Rp ${it.t.toLocaleString('id-ID')}</td></tr>`;});let disc=parseInt(document.getElementById('discount').value)||0;document.getElementById('pTokoNama').innerText=document.getElementById('tokoNama').value||'XTRADEVR Store';document.getElementById('pTokoAlamat').innerText=document.getElementById('tokoAlamat').value||'Alamat Toko';document.getElementById('pTokoWA').innerText='WA: '+(document.getElementById('tokoWA').value||'08xxx');document.getElementById('pCustNama').innerText=document.getElementById('custNama').value||'Nama Pelanggan';document.getElementById('pCustWA').innerText=document.getElementById('custWA').value||'-';document.getElementById('pInvNo').innerText='#'+(document.getElementById('invoiceNo').value||'INV-001');document.getElementById('pInvDate').innerText=document.getElementById('invoiceDate').value||today;document.getElementById('pPayment').innerText=document.getElementById('payment').value;document.getElementById('pSubtotal').innerText='Rp '+sub.toLocaleString('id-ID');document.getElementById('pDiscount').innerText='Rp '+disc.toLocaleString('id-ID');document.getElementById('pTotal').innerText='Rp '+(sub-disc).toLocaleString('id-ID');document.getElementById('pNotes').innerText=document.getElementById('notes').value||'Terima kasih!';}
+function shareWA(){let nama=document.getElementById('custNama').value||'Kak',total=document.getElementById('pTotal').innerText,inv=document.getElementById('invoiceNo').value,txt=`Halo ${nama}, ini Invoice ${inv} Total ${total} dari XTRADEVR Store. Terima kasih!`;window.open('https://wa.me/?text='+encodeURIComponent(txt));}
+render();
+</script>
+<!-- === BANNER BAWAH AMAN V3 - NO EXTERNAL AD - PROMO SENDIRI === -->
+<div id="ad-banner-bottom" class="no-print">
+<div style="font-size:9px;color:#888;margin-bottom:6px;letter-spacing:1px;">XTRADEVR • OFFLINE TOOLS • 100% AMAN</div>
+<a href="https://lynk.id/xtradevr" style="text-decoration:none;display:block;">
+<div style="background:linear-gradient(90deg,#FFD700,#FFA500);color:#000;font-weight:900;padding:8px;border-radius:8px;font-size:13px;animation:btnBlink 2s infinite">
+🔥 BUNDLE HEMAT 2 APP 59K - CEK DI LYNK.ID/XTRADEVR 🔥
+</div>
+</a>
+<button onclick="document.getElementById('ad-banner-bottom').style.display='none'" style="position:absolute;top:4px;right:8px;background:#333;color:#fff;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;font-weight:bold;">X</button>
+</div>
+</body>
+</html>
